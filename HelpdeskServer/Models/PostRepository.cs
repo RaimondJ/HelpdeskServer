@@ -2,23 +2,23 @@
 using Microsoft.EntityFrameworkCore;
 
 namespace HelpdeskServer.Models;
-public class StudentRepository(HelpdeskDbContext context)
+public class PostRepository(HelpdeskDbContext context)
 {
-    readonly HelpdeskDbContext _studentContext = context;
+    readonly HelpdeskDbContext _postContext = context;
     public async Task AddAsync(Post entity)
     {
-        _studentContext.posts.Add(entity);
-        await _studentContext.SaveChangesAsync();
+        _postContext.posts.Add(entity);
+        await _postContext.SaveChangesAsync();
     }
-    public async Task<Post?> GetAsync(int id) => await _studentContext.posts.FindAsync(id);
+    public async Task<Post?> GetAsync(int id) => await _postContext.posts.FindAsync(id);
 
     public async Task DeleteAsync(Post entity)
     {
-        _studentContext.Remove(entity);
-        await _studentContext.SaveChangesAsync();
+        _postContext.Remove(entity);
+        await _postContext.SaveChangesAsync();
     }
     public async Task<IEnumerable<Post>> GetAllAsync()
     {
-        return await _studentContext.posts.ToListAsync<Post>();
+        return await _postContext.posts.ToListAsync<Post>();
     }
 }

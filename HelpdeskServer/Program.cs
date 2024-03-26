@@ -2,13 +2,14 @@ using Microsoft.EntityFrameworkCore;
 using HelpdeskServer.Data;
 using Microsoft.AspNetCore.Localization;
 using System.Globalization;
+using HelpdeskServer.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
 builder.Services.AddControllers();
-
+builder.Services.AddScoped<PostRepository>();
 builder.Services.AddDbContext<HelpdeskDbContext>(options => {
 
     var connectionString = builder.Configuration.GetConnectionString("DatabaseConnection");

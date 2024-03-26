@@ -1,23 +1,30 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using HelpdeskServer.Data;
+using Microsoft.AspNetCore.Mvc;
+using HelpdeskServer.Models;
+using HelpdeskServer.DTO;
+using HelpdeskServer.Service;
 
 namespace HelpdeskServer.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class HelpdeskController : Controller
+    public class HelpdeskController(PostRepository postRepository) : Controller
     {
+        private readonly HelpdeskService _helpdeskService = new HelpdeskService(postRepository);
+        
         [HttpPost]
         [Route("post")]
-        public string Index()
+        public IActionResult AddPost(Post post)
         {
-            return "123";
+            _helpdeskService.addPost(post);
+            return Ok();
         }
 
         [HttpGet]
         [Route("posts")]
-        public string getPosts() 
+        public Task<IEnumerable<Post>> GetPosts() 
         {
-            return "0";
+            return postRepository.GetAllAsync();
         }
     }
 }
