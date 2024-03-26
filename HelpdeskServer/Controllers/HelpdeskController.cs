@@ -13,10 +13,22 @@ namespace HelpdeskServer.Controllers
     {
         [HttpPost]
         [Route("post")]
-        public async Task<IActionResult> AddPost(DTO.Request.PostDto postDto)
+        public async Task<DTO.Response.AddPostDto> AddPost(DTO.Request.PostDto postDto)
         {
+            if (postDto.endDate < DateTime.Now) 
+            {
+                return new DTO.Response.AddPostDto
+                {
+                    success = false,
+                    message = "Pöördumise tähtaeg ei saa olla juba möödunud aeg."
+                };
+            }
             await _helpdeskService.addPost(postDto);
-            return Ok();
+            return new DTO.Response.AddPostDto 
+            { 
+                success = true, 
+                message = $"Pöördumine on lisatud, tähtajaga {postDto.endDate.ToString("dd.MM.yyyy HH:mm:ss")}."
+            };
         }
 
         [HttpGet]

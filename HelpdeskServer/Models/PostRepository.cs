@@ -26,4 +26,10 @@ public class PostRepository(HelpdeskDbContext context)
     {
         return await _postContext.posts.CountAsync();
     }
+
+    public async Task<IEnumerable<Post>> GetAllOpenPostsAsync()
+    {
+        DateTime now = DateTime.Now;
+        return await _postContext.posts.FromSqlInterpolated($@"SELECT * FROM posts WHERE isClosed = false AND endDate > {now}").ToListAsync();
+    }
 }

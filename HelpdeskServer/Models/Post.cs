@@ -13,5 +13,6 @@ namespace HelpdeskServer.Models
         public DateTime endDate { get; set; }
         public string subject { get; set; }
         public string description { get; set; }
+        public bool isClosed { get; set; }
     }
 }
