@@ -3,20 +3,19 @@ using Microsoft.AspNetCore.Mvc;
 using HelpdeskServer.Models;
 using HelpdeskServer.DTO;
 using HelpdeskServer.Service;
+using Microsoft.Extensions.Hosting;
 
 namespace HelpdeskServer.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class HelpdeskController(PostRepository postRepository) : Controller
+    public class HelpdeskController(HelpdeskService _helpdeskService) : Controller
     {
-        private readonly HelpdeskService _helpdeskService = new HelpdeskService(postRepository);
-        
         [HttpPost]
         [Route("post")]
-        public IActionResult AddPost(Post post)
+        public async Task<IActionResult> AddPost(DTO.Request.PostDto postDto)
         {
-            _helpdeskService.addPost(post);
+            await _helpdeskService.addPost(postDto);
             return Ok();
         }
 
@@ -24,7 +23,14 @@ namespace HelpdeskServer.Controllers
         [Route("posts")]
         public Task<IEnumerable<Post>> GetPosts() 
         {
-            return postRepository.GetAllAsync();
+            return _helpdeskService.getAllPosts();
+        }
+
+        [HttpGet]
+        [Route("posts_count")]
+        public Task<int> GetPostsCount()
+        {
+            return _helpdeskService.getAllPostsCount();
         }
     }
 }

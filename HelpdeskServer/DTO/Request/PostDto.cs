@@ -2,8 +2,8 @@
 {
     public class PostDto
     {
-        public string subject { get; set; }
-        public string description { get; set; }
-        public DateTime endDate { get; set; }
+        public required string subject { get; set; }
+        public required string description { get; set; }
+        public required DateTime endDate { get; set; }
     }
 }

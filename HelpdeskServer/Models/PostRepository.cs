@@ -21,4 +21,9 @@ public class PostRepository(HelpdeskDbContext context)
     {
         return await _postContext.posts.ToListAsync<Post>();
     }
+
+    public async Task<int> GetPostCountAsync()
+    {
+        return await _postContext.posts.CountAsync();
+    }
 }

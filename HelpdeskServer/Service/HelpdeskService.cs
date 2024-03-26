@@ -1,20 +1,35 @@
-﻿using HelpdeskServer.Models;
+﻿using HelpdeskServer.Data;
+using HelpdeskServer.DTO;
+using HelpdeskServer.Models;
 
-namespace HelpdeskServer.Service
+namespace HelpdeskServer.Service;
+
+public class HelpdeskService(PostRepository repository)
 {
-    public class HelpdeskService
+    readonly PostRepository _repository = repository;
+    public async Task addPost(DTO.Request.PostDto post)
     {
-        private PostRepository repository;
-        public HelpdeskService(PostRepository postRepository) 
+        await _repository.AddAsync(new Post
         {
-            repository = postRepository;
-        }
+            beginDate = DateTime.UtcNow,
+            description = post.description,
+            endDate = post.endDate,
+            subject = post.subject
+        });
+    }
 
-        public async void addPost(Post post)
-        {
-            await repository.AddAsync(post);
-        }
+    public async Task<IEnumerable<Post>> getAllPosts()
+    {
+        return await _repository.GetAllAsync();
+    }
 
+    public async Task<Post> getPostById(int id)
+    {
+        return await _repository.GetAsync(id);
+    }
 
+    public async Task<int> getAllPostsCount()
+    {
+        return await _repository.GetPostCountAsync();
     }
 }
