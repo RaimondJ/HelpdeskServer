@@ -4,58 +4,42 @@ using HelpdeskServer.Models;
 using HelpdeskServer.DTO;
 using HelpdeskServer.Service;
 using Microsoft.Extensions.Hosting;
+using System.Reflection.Metadata.Ecma335;
 
 namespace HelpdeskServer.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class HelpdeskController(HelpdeskService _helpdeskService) : Controller
+    public class HelpdeskController(HelpdeskService helpdeskService) : Controller
     {
+        private readonly HelpdeskService _helpdeskService = helpdeskService;
+
         [HttpPost]
         [Route("post")]
         public async Task<DTO.Response.AddPostDto> AddPost(DTO.Request.PostDto postDto)
         {
-            if (postDto.endDate < DateTime.Now) 
-            {
-                return new DTO.Response.AddPostDto
-                {
-                    success = false,
-                    message = "Pöördumise tähtaeg ei saa olla juba möödunud aeg."
-                };
-            }
-            await _helpdeskService.addPost(postDto);
-            return new DTO.Response.AddPostDto 
-            { 
-                success = true, 
-                message = $"Pöördumine on lisatud, tähtajaga {postDto.endDate.ToString("dd.MM.yyyy HH:mm:ss")}."
-            };
+            return await _helpdeskService.addPost(postDto);
         }
 
         [HttpGet]
         [Route("posts")]
-        public Task<IEnumerable<DTO.Response.PostInfoDto>> GetPosts() 
+        public async Task<IEnumerable<DTO.Response.PostInfoDto>> GetPosts() 
         {
-            return _helpdeskService.getAllOpenPosts();
+            return await _helpdeskService.getAllOpenPosts();
         }
 
         [HttpGet]
         [Route("posts_count")]
         public async Task<DTO.Response.PostsCountDto> GetPostsCount()
         {
-            int total = await _helpdeskService.getAllPostsCount();
-            return new DTO.Response.PostsCountDto { total = total };
+            return await _helpdeskService.getAllPostsCount();
         }
 
         [HttpDelete]
         [Route("post/{id}")]
         public async Task<DTO.Response.DeletePostDto> DeletePost(int id)
         {
-            bool success = await _helpdeskService.updateIsClosedAsync(id, true);
-            if (success) 
-            {
-                return new DTO.Response.DeletePostDto { success = true, message = "Pöördumine märgiti edukalt lahendatuks." };
-            }
-            return new DTO.Response.DeletePostDto { success = false, message = "Sellist pöördumist ei leitud. Proovi lehte värskendada." };
+            return await _helpdeskService.updateIsClosedAsync(id, true);
         }
     }
 }
