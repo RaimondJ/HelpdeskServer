@@ -1,5 +1,6 @@
 ﻿using HelpdeskServer.Data;
 using Microsoft.EntityFrameworkCore;
+using System.Diagnostics;
 
 namespace HelpdeskServer.Models;
 public class PostRepository(HelpdeskDbContext context)
@@ -22,14 +23,28 @@ public class PostRepository(HelpdeskDbContext context)
         return await _postContext.posts.ToListAsync<Post>();
     }
 
-    public async Task<int> GetPostCountAsync()
+    public async Task<int> GetPostsCountAsync()
     {
         return await _postContext.posts.CountAsync();
     }
 
     public async Task<IEnumerable<Post>> GetAllOpenPostsAsync()
     {
-        DateTime now = DateTime.Now;
-        return await _postContext.posts.FromSqlInterpolated($@"SELECT * FROM posts WHERE isClosed = false AND endDate > {now}").ToListAsync();
+        return await _postContext.posts.FromSqlInterpolated($@"SELECT * FROM posts WHERE isClosed = false ORDER BY endDate DESC").ToListAsync();
+    }
+
+    public async Task<bool> UpdateIsClosedAsync(int id, bool isClosed)
+    {
+        var post = await _postContext.posts.FindAsync(id);
+        if (post != null)
+        {
+            post.isClosed = isClosed;
+            await _postContext.SaveChangesAsync();
+            return true;
+        }
+        else
+        {
+            return false;
+        }
     }
 }

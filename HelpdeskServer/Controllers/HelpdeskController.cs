@@ -33,16 +33,29 @@ namespace HelpdeskServer.Controllers
 
         [HttpGet]
         [Route("posts")]
-        public Task<IEnumerable<Post>> GetPosts() 
+        public Task<IEnumerable<DTO.Response.PostInfoDto>> GetPosts() 
         {
-            return _helpdeskService.getAllPosts();
+            return _helpdeskService.getAllOpenPosts();
         }
 
         [HttpGet]
         [Route("posts_count")]
-        public Task<int> GetPostsCount()
+        public async Task<DTO.Response.PostsCountDto> GetPostsCount()
         {
-            return _helpdeskService.getAllPostsCount();
+            int total = await _helpdeskService.getAllPostsCount();
+            return new DTO.Response.PostsCountDto { total = total };
+        }
+
+        [HttpDelete]
+        [Route("post/{id}")]
+        public async Task<DTO.Response.DeletePostDto> DeletePost(int id)
+        {
+            bool success = await _helpdeskService.updateIsClosedAsync(id, true);
+            if (success) 
+            {
+                return new DTO.Response.DeletePostDto { success = true, message = "Pöördumine märgiti edukalt lahendatuks." };
+            }
+            return new DTO.Response.DeletePostDto { success = false, message = "Sellist pöördumist ei leitud. Proovi lehte värskendada." };
         }
     }
 }
