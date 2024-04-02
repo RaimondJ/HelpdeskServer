@@ -30,7 +30,10 @@ public class PostRepository(HelpdeskDbContext context)
 
     public async Task<IEnumerable<Post>> GetAllOpenPostsAsync()
     {
-        return await _postContext.posts.FromSqlInterpolated($@"SELECT * FROM posts WHERE isClosed = false ORDER BY endDate DESC").ToListAsync();
+        return await _postContext.posts
+            .Where(post => !post.isClosed)
+            .OrderByDescending(post => post.endDate)
+            .ToListAsync();
     }
 
     public async Task<bool> UpdateIsClosedAsync(int id, bool isClosed)

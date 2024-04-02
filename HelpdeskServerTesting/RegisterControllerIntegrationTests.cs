@@ -84,7 +84,15 @@ namespace HelpdeskServerTesting
             var response = await _client.SendAsync(postRequest);
 
             response.EnsureSuccessStatusCode();
-           
+
+            var allPostsResponse = await _client.GetAsync("/api/helpdesk/posts");
+            var responseString = await allPostsResponse.Content.ReadAsStringAsync();
+            Debug.WriteLine(responseString);
+            JArray responseJson = JArray.Parse(responseString);
+            JObject firstPost = responseJson[0].ToObject<JObject>();
+
+            Assert.Equal((string)firstPost["subject"], subject);
+            Assert.Equal((string)firstPost["description"], description);
         }
     }
 }
