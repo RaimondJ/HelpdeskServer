@@ -33,3 +33,5 @@ app.UseCors(builder => builder
                .AllowCredentials()
            );
 app.Run();
+
+public partial class Program { }
