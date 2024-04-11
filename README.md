@@ -2,6 +2,10 @@
 
 Helpdesk server made with ASP.NET Core 8.0
 
+Database used here is MariaDB, but all other sql databases should work too, you just have to configure appsettings.json database connection string.
+
+The database name here is helpdesk, and the single table name will be posts, that will store all posts, even the deleted ones.
+
 ## Installation
 - git clone
 - cd to the folder
