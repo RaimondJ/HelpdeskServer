@@ -23,4 +23,4 @@ Tests are included, for tests the app is using a local temporary database. So if
 - Change sql connection string in appsettings.json
 - Create a new database of your choice, here it is called 'helpdesk'
 - Run **dotnet ef database update** to generate tables
-- Run application 
+- Build and Run application 
